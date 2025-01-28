@@ -1,0 +1,17 @@
+{
+    "name": "tatiana/query-parkinglot-microservice",
+    "description": "Query Parking Lot Microservice",
+    "require": {
+      "php": "^7.4",
+      "slim/slim": "^4.9",
+      "slim/psr7": "^1.4",
+      "php-di/php-di": "^6.3",
+      "doctrine/dbal": "^3.2"
+    },
+    "autoload": {
+      "psr-4": {
+        "App\\": "src/"
+      }
+    }
+  }
+  
