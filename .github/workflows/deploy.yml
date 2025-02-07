@@ -18,8 +18,8 @@ jobs:
 
       - name: Construir y subir imagen a Docker Hub
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/create_parkinglot_microservice_image:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/create_parkinglot_microservice_image:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/query_parkinglot_microservice_image:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/query_parkinglot_microservice_image:latest
 
       - name: Conectar a AWS EC2 y desplegar
         uses: appleboy/ssh-action@master
@@ -31,10 +31,10 @@ jobs:
             echo "🚀 Iniciando despliegue en AWS EC2..."
 
             # Detener y eliminar el contenedor si ya existe
-            if sudo docker ps -a --format '{{.Names}}' | grep -q create_parkinglot_microservice_container; then
+            if sudo docker ps -a --format '{{.Names}}' | grep -q query_parkinglot_microservice_container; then
               echo "🛑 Deteniendo y eliminando contenedor existente..."
-              sudo docker stop create_parkinglot_microservice_container
-              sudo docker rm create_parkinglot_microservice_container
+              sudo docker stop query_parkinglot_microservice_container
+              sudo docker rm query_parkinglot_microservice_container
             fi
 
             # Remover imágenes antiguas para evitar acumulación
@@ -43,16 +43,16 @@ jobs:
 
             # Descargar la última versión de la imagen desde Docker Hub
             echo "📥 Descargando nueva imagen..."
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/create_parkinglot_microservice_image:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/query_parkinglot_microservice_image:latest
 
             # Ejecutar el nuevo contenedor con las variables de entorno
             echo "🚀 Ejecutando nuevo contenedor..."
-            sudo docker run -d --name create_parkinglot_microservice_container \
+            sudo docker run -d --name query_parkinglot_microservice_container \
               --env DB_HOST=${{ secrets.DB_HOST_M }} \
               --env DB_USER=${{ secrets.DB_USER_M }} \
               --env DB_PASSWORD=${{ secrets.DB_PASSWORD_M }} \
               --env DB_NAME=${{ secrets.DB_NAME_M }} \
-              -p 6000:6000 \
-              ${{ secrets.DOCKER_USERNAME }}/create_parkinglot_microservice_image:latest
+              -p 6001:6001 \
+              ${{ secrets.DOCKER_USERNAME }}/query_parkinglot_microservice_image:latest
 
             echo "✅ Despliegue completado con éxito."
