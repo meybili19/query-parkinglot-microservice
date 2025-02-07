@@ -1,38 +1,19 @@
-# Imagen base de PHP con Apache
-FROM php:8.4-apache
+FROM node:18
 
-# Establecer el directorio de trabajo dentro del contenedor
-WORKDIR /var/www/html
+# Set the working directory inside the container
+WORKDIR /app
 
-# Instalar extensiones necesarias y utilidades del sistema
-RUN apt-get update && apt-get install -y \
-    unzip \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    && docker-php-ext-install \
-    pdo \
-    pdo_mysql \
-    mysqli \
-    mbstring \
-    zip \
-    && a2enmod rewrite
+# Copy dependency files
+COPY package.json package-lock.json ./
 
-# Copiar archivos del proyecto al contenedor
-COPY . /var/www/html
+# Install dependencies
+RUN npm install --omit=dev
 
-# Instalar Composer
-COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
+# Copy the rest of the application code
+COPY . .
 
-# Instalar las dependencias de PHP
-RUN composer install
+# Expose the port on which the application will run
+EXPOSE 6000
 
-# Configurar permisos para Apache
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
-# Exponer el puerto 80 para HTTP
-EXPOSE 80
-
-# Comando para iniciar Apache
-CMD ["apache2-foreground"]
+# Command to run the application
+CMD ["node", "server.js"]
