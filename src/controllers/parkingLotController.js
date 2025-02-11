@@ -18,4 +18,15 @@ const getParkingLotById = async (req, res) => {
     }
 };
 
-module.exports = { getParkingLotById };
+const getAllParkingLots = async (req, res) => {
+    try {
+        const parkingLots = await ParkingLot.getAllParkingLots();
+        res.status(200).json(parkingLots);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching parking lots', error });
+    }
+};
+
+module.exports = { getParkingLotById, getAllParkingLots };
+
+
