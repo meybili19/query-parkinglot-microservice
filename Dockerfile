@@ -13,7 +13,7 @@ RUN npm install --omit=dev
 COPY . .
 
 # Expose the port on which the application will run
-EXPOSE 6000
+EXPOSE 7003
 
 # Command to run the application
 CMD ["node", "server.js"]
